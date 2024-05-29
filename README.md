@@ -1,5 +1,7 @@
 # Little_tips
 
-### Function
+### Function:
 
-#### calculateTeamFinanceReport
+**calculateTeamFinanceReport:**
+
+- Розраховує загальну зарплатню команди з урахуванням податків, а також зарплатню для кожної спеціалізації.
