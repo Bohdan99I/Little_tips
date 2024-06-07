@@ -1,38 +1,45 @@
+// Створює об'єкт блоку з вказаною шириною, висотою, початковими координатами та кольором.
 function createBlock(blockWidth, blockHeight) {
   return {
     width: blockWidth,
     height: blockHeight,
-    isPlaced: false,
-    coordinates: { top: null, left: null, right: null, bottom: null },
-    color: null,
+    isPlaced: false, // Вказує, чи розміщено блок у контейнері
+    coordinates: { top: null, left: null, right: null, bottom: null }, // Початкові координати блоку
+    color: null, // Колір блоку
   };
 }
 
+// Створює об'єкт контейнера з вказаними розмірами та однією порожниною, що займає всю площу контейнера.
 function createContainer(containerWidth, containerHeight) {
   return {
     width: containerWidth,
     height: containerHeight,
     internalCavities: [
-      { top: 0, left: 0, right: containerWidth, bottom: containerHeight },
+      { top: 0, left: 0, right: containerWidth, bottom: containerHeight }, // Визначає всю область контейнера як одну порожнину
     ],
   };
 }
 
+// Розраховує метрики заповненості контейнера блоками.
 function calcMetrics(blocks, container) {
+  // Розраховує загальну площу всіх блоків
   const totalBlockArea = blocks.reduce(
     (total, block) => total + block.width * block.height,
     0
   );
 
+  // Розраховує загальну площу внутрішніх порожнин контейнера
   const internalCavitiesArea = container.internalCavities.reduce(
     (total, space) =>
       total + (space.right - space.left) * (space.bottom - space.top),
     0
   );
 
+  // Розраховує заповненість контейнера (частку зайнятої площі)
   const fullness =
     1 - internalCavitiesArea / (internalCavitiesArea + totalBlockArea);
 
+  // Отримує координати всіх розміщених блоків
   const blockCoordinates = blocks
     .filter((block) => block.isPlaced)
     .map((block, index) => ({
@@ -47,9 +54,12 @@ function calcMetrics(blocks, container) {
   return { fullness, blockCoordinates };
 }
 
+// Розміщує блоки в контейнері, якщо це можливо, та оновлює внутрішні порожнини.
 function stackBlocks(blocks, container) {
+  // Сортує блоки за площею (в порядку спадання)
   blocks.sort((a, b) => b.width * b.height - a.width * a.height);
   for (const block of blocks) {
+    // Знаходить відповідну порожнину для блоку
     const spaceIndex = container.internalCavities.findIndex(
       (space) =>
         block.width <= space.right - space.left &&
@@ -59,6 +69,7 @@ function stackBlocks(blocks, container) {
     if (spaceIndex !== -1) {
       const space = container.internalCavities[spaceIndex];
 
+      // Встановлює координати блоку
       block.coordinates = {
         top: space.top,
         left: space.left,
@@ -67,6 +78,8 @@ function stackBlocks(blocks, container) {
       };
 
       block.isPlaced = true;
+
+      // Оновлює внутрішні порожнини контейнера
       const newInternalCavities = [
         {
           top: space.top,
@@ -106,6 +119,7 @@ function stackBlocks(blocks, container) {
   return calcMetrics(blocks, container);
 }
 
+// Генерує випадковий колір.
 function getRandomColor() {
   const letters = "0123456789ABCDEF";
   let color = "#";
@@ -115,6 +129,7 @@ function getRandomColor() {
   return color;
 }
 
+// Додає колір блокам, забезпечуючи унікальність кольорів для блоків однакового розміру.
 function addColor(blocks) {
   const uniqueBlockSizes = {};
   for (const block of blocks) {
@@ -127,12 +142,14 @@ function addColor(blocks) {
   }
 }
 
+// Завантажує дані блоків із зовнішнього файлу.
 async function loadBlocksData() {
   const response = await fetch("blocks.json");
   const blocksInfo = await response.json();
   return blocksInfo;
 }
 
+// Оновлює інтерфейс користувача відповідно до результатів розміщення блоків.
 function updateUI(result, containerInfo) {
   const containerDiv = document.getElementById("container");
   containerDiv.style.width = containerInfo.width + "px";
@@ -142,6 +159,7 @@ function updateUI(result, containerInfo) {
 
   containerDiv.innerHTML = "";
 
+  // Створює HTML-елементи для кожного блоку та додає їх до контейнера
   result.blockCoordinates.forEach((coords) => {
     const block = document.createElement("div");
     block.className = "block";
@@ -157,6 +175,7 @@ function updateUI(result, containerInfo) {
   });
 }
 
+// Ініціалізує процес розміщення блоків та оновлення інтерфейсу.
 async function initialize() {
   const blocksInfo = await loadBlocksData();
   const blocks = blocksInfo.map((info) => createBlock(info.width, info.height));
@@ -169,6 +188,7 @@ async function initialize() {
   const result = stackBlocks(blocks, container);
   updateUI(result, containerInfo);
 
+  // Оновлює розміщення блоків при зміні розміру вікна
   window.addEventListener("resize", () => {
     containerInfo.width = window.innerWidth;
     containerInfo.height = window.innerHeight;
@@ -177,4 +197,5 @@ async function initialize() {
   });
 }
 
+// Викликає функцію initialize при завантаженні сторінки
 window.onload = initialize;
