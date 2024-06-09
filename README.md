@@ -1,13 +1,15 @@
 # Little_tips
 
-### Function:
+## Function:
 
-**calculateTeamFinanceReport:**
+### calculateTeamFinanceReport:
 
 - Розраховує загальну зарплатню команди з урахуванням податків, а також зарплатню для кожної спеціалізації.
 
-**2d_blocks**
+### 2d_blocks:
 
 - Ця функція завантажує дані про блоки з файлу blocks.json, створює блоки та контейнер, розміщує блоки в контейнері, обчислює показники заповнення контейнера, додає кольори до блоків, і оновлює інтерфейс користувача на основі отриманих результатів.
   #### Demo
-    See [Demo](https://bohdan99i.github.io/Test_2D_blocks/).
+  See [Demo](https://bohdan99i.github.io/Test_2D_blocks/).
+
+### Background color:
