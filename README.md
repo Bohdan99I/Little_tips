@@ -13,3 +13,7 @@
   See [Demo](https://bohdan99i.github.io/Test_2D_blocks/).
 
 ### Background color:
+
+- Код додає обробник події до кнопки, що змінює колір фону сторінки на випадковий колір у форматі Hex і відображає цей колір у текстовому елементі при натисканні.
+  #### Demo
+  See [Demo](https://bohdan99i.github.io/goit-js-hw-06/task-09.html).
